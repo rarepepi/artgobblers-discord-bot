@@ -7,9 +7,11 @@ var cron = require('node-cron');
 export class AppService {
   static running = false;
   static lastTxnTash = '';
+  static txnsToSend = [];
+  static txnsAlreadySent = [];
   static tenMinOldBLockNumber = null;
 
-  sendDiscordMessage(): void {
+  async sendDiscordMessage(): Promise<void> {
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
     const embed = new MessageBuilder()
       .setTitle('Wallet transaction detected')
@@ -24,6 +26,8 @@ export class AppService {
     if (AppService.running) {
       return 'Already running!';
     }
+    const gobbleTxnSignature = 0x6cfdbcae;
+    const glamifcationTxnSignature = 0xc9bddac6;
     cron.schedule('*/1 * * * *', async () => {
       // Get last transaction
       const txnList = await axios.get(
@@ -35,7 +39,7 @@ export class AppService {
       // Send discord message if txn hash is different
       if (lastTxn.hash !== AppService.lastTxnTash) {
         AppService.lastTxnTash = lastTxn.hash;
-        this.sendDiscordMessage();
+        await this.sendDiscordMessage();
       }
     });
     AppService.running = true;

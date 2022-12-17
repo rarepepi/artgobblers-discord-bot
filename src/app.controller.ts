@@ -5,13 +5,13 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  statusDto = {
-    status: AppService.running ? 'Running' : 'Not Running',
-    walletAddress: process.env.WALLET_ADDRESS,
-  };
   @Get()
   root(): string {
-    return JSON.stringify(this.statusDto);
+    const statusDto = {
+      status: AppService.running ? 'Running' : 'Not Running',
+      walletAddress: process.env.WALLET_ADDRESS,
+    };
+    return JSON.stringify(statusDto);
   }
 
   @Get('/run')
