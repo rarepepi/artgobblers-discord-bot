@@ -15,8 +15,8 @@ export class AppService {
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
     const embed = new MessageBuilder()
       .setTitle('Wallet transaction detected')
-      .setDescription('Wallet address: ' + process.env.WALLET_ADDRESS)
-      .setURL(`https://etherscan.io/address/${process.env.WALLET_ADDRESS}`)
+      .setDescription('Wallet address: ')
+      .setURL(`https://etherscan.io/address/`)
       .setColor('#32CD32')
       .setTimestamp();
     hook.send(embed);
@@ -28,11 +28,10 @@ export class AppService {
     }
     const gobbleTxnSignature = 0x6cfdbcae;
     const glamifcationTxnSignature = 0xc9bddac6;
+
     cron.schedule('*/1 * * * *', async () => {
       // Get last transaction
-      const txnList = await axios.get(
-        `https://api.etherscan.io/api?module=account&action=txlist&address=${process.env.WALLET_ADDRESS}&startblock=${AppService.tenMinOldBLockNumber}&sort=asc&apikey=${process.env.ETHERSCAN_API_KEY}`,
-      );
+      const txnList = await axios.get(``);
       const txns = txnList.data.result;
       const lastTxn = txns[txns.length - 1];
 

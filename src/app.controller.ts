@@ -9,7 +9,7 @@ export class AppController {
   root(): string {
     const statusDto = {
       status: AppService.running ? 'Running' : 'Not Running',
-      walletAddress: process.env.WALLET_ADDRESS,
+      gobblersAddress: '0x6cfdbcae',
     };
     return JSON.stringify(statusDto);
   }
