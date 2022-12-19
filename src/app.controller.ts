@@ -9,7 +9,7 @@ export class AppController {
   root(): string {
     const statusDto = {
       status: AppService.running ? 'Running' : 'Not Running',
-      gobblersAddress: '0x6cfdbcae',
+      lastBlockProcessed: AppService.lastBlockProcessed,
     };
     return JSON.stringify(statusDto);
   }
