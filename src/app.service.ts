@@ -11,6 +11,13 @@ export class AppService {
   static txnsAlreadySent = new Set();
   static lastBlockProcessed = 16203000;
 
+  static titles = [
+    'Looks delicious!',
+    'Its a feast!',
+    'Yum!',
+    'Gobble gobble!',
+  ];
+
   async sendDiscordMessage(data: {
     gobblerId: number;
     gobblerMetadata: any;
@@ -18,13 +25,16 @@ export class AppService {
     pageMetadata: any;
   }): Promise<void> {
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
+    const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 12);
     const embed = new MessageBuilder()
-      .setTitle(`${data.pageMetadata.name.split(' –')[0]} was gobbled!`)
+      .setTitle(
+        AppService.titles[Math.floor(Math.random() * AppService.titles.length)],
+      )
       .setURL(`https://artgobblers.com/gobbler/${data.gobblerId}`)
       .setDescription(
-        `Gobbler ${data.gobblerId} ${
-          data.gobblerMetadata.name.split(' –')[1]
-        } gobbled Page ${data.pageId}`,
+        `**${data.gobblerMetadata.name.split(' –')[1]}** just gobbled ***"${
+          data.pageMetadata.name.split(' –')[0]
+        }"*** by ${addressOrEns}...`,
       )
       .setThumbnail(data.gobblerMetadata.image)
       .setImage(data.pageMetadata.image)
