@@ -2,7 +2,7 @@
   <img src="https://i.imgur.com/bmery0O.jpg" width="200" alt="Logo" />
 </p>
 
-  <p align="center"> Next.js service that invokes a Discord webhook whenever there is a Gobble or Glam function used on Art Gobblers Contracts. </p>
+  <p align="center"> Next.js service that invokes a Discord webhook whenever there is a Gobble or Glam function used on Art Gobblers Contracts. Open Source</p>
 
 ## Description
 
