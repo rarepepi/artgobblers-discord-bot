@@ -7,14 +7,98 @@ import { ethers } from 'ethers';
 @Injectable()
 export class AppService {
   static running = false;
-  static txnsToSend = new Set();
-  static txnsAlreadySent = new Set();
+  static gobblesAlreadySent = new Set();
+  static glamAlreadySent = new Set([
+    '393',
+    '2257',
+    '2302',
+    '1191',
+    '1693',
+    '2328',
+    '2065',
+    '768',
+    '2201',
+    '1786',
+    '2510',
+    '2511',
+    '2358',
+    '1133',
+    '2543',
+    '1134',
+    '618',
+    '2544',
+    '2222',
+    '1789',
+    '2306',
+    '1694',
+    '1702',
+    '2464',
+    '2506',
+    '2126',
+    '1916',
+    '1805',
+    '63',
+    '2508',
+    '2509',
+    '2592',
+    '2745',
+    '1914',
+    '684',
+    '2062',
+    '2061',
+    '2202',
+    '1668',
+    '713',
+    '2304',
+    '1915',
+    '195',
+    '2256',
+    '2119',
+    '2120',
+    '2121',
+    '2929',
+    '2545',
+    '2961',
+    '2463',
+    '1563',
+    '2758',
+    '3046',
+    '3076',
+    '2970',
+    '3153',
+    '2173',
+    '1593',
+    '2809',
+    '3176',
+    '621',
+    '775',
+    '2733',
+  ]);
   static lastBlockProcessed = 0;
 
   async processArtGlammed() {
-    const glamList = await axios.get(
-      'https://api.artgobblers.com/api/trpc/user.me,page.recentlyGlaminated?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22take%22%3A64%7D%7D%7D',
-    );
+    const glamList = (
+      await axios.get(
+        'https://api.artgobblers.com/api/trpc/user.me,page.recentlyGlaminated?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22take%22%3A64%7D%7D%7D',
+      )
+    ).data[1].result.data.json;
+
+    for (const glam of glamList) {
+      if (AppService.glamAlreadySent.has(glam.id)) {
+        continue;
+      }
+
+      const pageMetadata = (
+        await axios.get(`https://nfts.artgobblers.com/api/pages/${glam.id}`)
+      ).data;
+
+      await this.sendDiscordMessageGlammed({
+        pageMetadata,
+        glamMetadata: glam,
+      });
+
+      AppService.glamAlreadySent.add(glam.id);
+    }
   }
 
   async processArtGobbled() {
@@ -36,7 +120,7 @@ export class AppService {
 
     const txns = txnList.data.result;
     for (const txn of txns) {
-      if (AppService.txnsAlreadySent.has(txn.transactionHash)) {
+      if (AppService.gobblesAlreadySent.has(txn.transactionHash)) {
         continue;
       }
       if (txn.topics[0] === gobbleEventHash) {
@@ -59,17 +143,15 @@ export class AppService {
           pageId: pageTokenId,
           pageMetadata,
         });
-        AppService.txnsAlreadySent.add(txn.transactionHash);
+        AppService.gobblesAlreadySent.add(txn.transactionHash);
       }
     }
     AppService.lastBlockProcessed = lastBlock;
   }
 
   async sendDiscordMessageGlammed(data: {
-    gobblerId: number;
-    gobblerMetadata: any;
-    pageId: number;
     pageMetadata: any;
+    glamMetadata: any;
   }): Promise<void> {
     const artGlammedTitles = [`It's a masterpiece!`, 'Picaso?'];
 
@@ -79,14 +161,12 @@ export class AppService {
       .setTitle(
         artGlammedTitles[Math.floor(Math.random() * artGlammedTitles.length)],
       )
-      .setURL(`https://artgobblers.com/gobbler/${data.gobblerId}`)
+      .setURL(`https://artgobblers.com/page/${data.glamMetadata.id}`)
       .setDescription(
-        `**${data.gobblerMetadata.name.split(' –')[1]}** just gobbled ***"${
-          data.pageMetadata.name.split(' –')[0]
-        }"*** by ${addressOrEns}...`,
+        `**${data.glamMetadata.drawing.artwork_title}**  by ${addressOrEns}...`,
       )
-      .setThumbnail(data.gobblerMetadata.image)
-      .setImage(data.pageMetadata.image)
+      .setThumbnail('https://i.imgur.com/X9Th2xX.gif')
+      .setImage(data.glamMetadata.cdn_image_url)
       .setColor(data.pageMetadata.background_color);
     hook.send(embed);
   }
@@ -136,11 +216,12 @@ export class AppService {
         ).data.result,
       ) - 10;
 
-    // cron.schedule('*/1 * * * *', async () => {
-    await this.processArtGobbled();
-    await this.processArtGlammed();
-    // });
+    cron.schedule('*/1 * * * *', async () => {
+      await this.processArtGobbled();
+      await this.processArtGlammed();
+    });
     AppService.running = true;
+
     return 'Running!';
   }
 }

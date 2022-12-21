@@ -10,6 +10,8 @@ export class AppController {
     const statusDto = {
       status: AppService.running ? 'Running' : 'Not Running',
       lastBlockProcessed: AppService.lastBlockProcessed,
+      gobblesProcessed: Array.from(AppService.gobblesAlreadySent),
+      glamsProcessed: Array.from(AppService.glamAlreadySent),
     };
     return JSON.stringify(statusDto);
   }
