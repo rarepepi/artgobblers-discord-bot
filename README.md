@@ -2,11 +2,13 @@
   <img src="https://i.imgur.com/MVEC74R.png" width="200" alt="Logo" />
 </p>
 
-  <p align="center"> Next.js service that invokes a Discord webhook whenever there is a Gobble or Glam function used on Art Gobblers Contracts. Open Source</p>
+  <p align="center"> Next.js microservice that sends a message through a Discord webhook whenever there is a Gobble or Glam event.</p>
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest)
+There is a cron job that runs every couple of minutes to check the last 1000 txns of the Art Gobblers Smart Contracts and see if any ArtGobbled events occured. If it doesn't have that txn hash stored it will send a message to discord through a webhook.
+
+Glamination works through querying the backend api of the Art Gobblers website, since the Glam is off-chain and gas-less.
 
 ## Installation
 
