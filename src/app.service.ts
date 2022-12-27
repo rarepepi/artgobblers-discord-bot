@@ -159,9 +159,8 @@ export class AppService {
   }): Promise<void> {
     const artGlammedTitles = [
       `It's a masterpiece!`,
-      'Picaso?',
+      'Picasso?',
       'Van Gogh?',
-      "It's a masterpiece!",
       'One for the history books!',
       'A true work of genius!',
       'A tour de force!',
