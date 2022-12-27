@@ -73,6 +73,10 @@ export class AppService {
     '621',
     '775',
     '2733',
+    '3719',
+    '3718',
+    '1917',
+    '3717',
   ]);
   static lastBlockProcessed = 0;
 
