@@ -153,7 +153,18 @@ export class AppService {
     pageMetadata: any;
     glamMetadata: any;
   }): Promise<void> {
-    const artGlammedTitles = [`It's a masterpiece!`, 'Picaso?'];
+    const artGlammedTitles = [
+      `It's a masterpiece!`,
+      'Picaso?',
+      'Van Gogh?',
+      "It's a masterpiece!",
+      'One for the history books!',
+      'A true work of genius!',
+      'A tour de force!',
+      'A joy to behold!',
+      'Simply breathtaking!',
+      'An artistic triumph!',
+    ];
 
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
     const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 12);
@@ -183,6 +194,9 @@ export class AppService {
       'Its a feast!',
       'Yum!',
       'Gobble gobble!',
+      'Gobblicious',
+      'Goo me Goo my',
+      'Gobble very much',
     ];
 
     const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 12);
