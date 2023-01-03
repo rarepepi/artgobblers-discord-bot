@@ -7,7 +7,13 @@ import { ethers } from 'ethers';
 @Injectable()
 export class AppService {
   static running = false;
-  static gobblesAlreadySent = new Set();
+  static gobblesAlreadySent = new Set([
+    '0xaf41efe6a7854b20662bf43f06122e36f407819aaf540684ce511fa0582ded98',
+    '0x5a21130f1b9f8419101c2c89c5801d3c8a84e7c9a4e1b9b98740c61cd6ac0d4a',
+    '0xd616bc45da7261b2554001cb5a5aca3949bf5abe26c4b43b634bdc12104dfbeb',
+    '0x32dd030bdd32642f0f5fad2d6d9bf96fca5642008d2326d6c21298e2eb04979c',
+    '0x99c42b6e6e8c2e77ac010945465695f727ee782120938ef996338a723cfe3b3f',
+  ]);
   static glamAlreadySent = new Set([
     '393',
     '2257',
@@ -106,6 +112,24 @@ export class AppService {
     '3383',
     '1862',
     '3352',
+    '3720',
+    '3676',
+    '3797',
+    '2794',
+    '3764',
+    '2835',
+    '2500',
+    '3465',
+    '1857',
+    '3765',
+    '3793',
+    '3794',
+    '3795',
+    '1575',
+    '3550',
+    '3553',
+    '3707',
+    '862',
   ]);
   static lastBlockProcessed = 0;
 
@@ -199,15 +223,14 @@ export class AppService {
     ];
 
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
-    const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 12);
+    const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 18);
+    const artWorkTitle = data.glamMetadata.drawing.artwork_title || 'Untitled';
     const embed = new MessageBuilder()
       .setTitle(
         artGlammedTitles[Math.floor(Math.random() * artGlammedTitles.length)],
       )
       .setURL(`https://artgobblers.com/page/${data.glamMetadata.id}`)
-      .setDescription(
-        `**${data.glamMetadata.drawing.artwork_title}**  by ${addressOrEns}...`,
-      )
+      .setDescription(`**${artWorkTitle}**  by ${addressOrEns}...`)
       .setThumbnail('https://i.imgur.com/X9Th2xX.gif')
       .setImage(data.glamMetadata.cdn_image_url)
       .setColor(data.pageMetadata.background_color);
@@ -231,7 +254,7 @@ export class AppService {
       'Gobble very much',
     ];
 
-    const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 12);
+    const addressOrEns = data.pageMetadata.attributes[1].value.substring(0, 18);
     const embed = new MessageBuilder()
       .setTitle(
         artGobbledTitles[Math.floor(Math.random() * artGobbledTitles.length)],
