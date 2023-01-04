@@ -224,9 +224,10 @@ export class AppService {
 
     const hook = new Webhook(process.env.DISCORD_WEBHOOK);
     const addressOrEns =
-      data.pageMetadata.attributes[1].value.indexOf('.eth') > -1
-        ? data.pageMetadata.attributes[1].value
-        : data.pageMetadata.attributes[1].value.substring(0, 6);
+      data.pageMetadata.attributes[1].value.indexOf('0x') > -1 &&
+      data.pageMetadata.attributes[1].value.length === 42
+        ? data.pageMetadata.attributes[1].value.substring(0, 6)
+        : data.pageMetadata.attributes[1].value;
     const artWorkTitle = data.glamMetadata.drawing.artwork_title || 'Untitled';
     const embed = new MessageBuilder()
       .setTitle(
@@ -258,9 +259,10 @@ export class AppService {
     ];
 
     const addressOrEns =
-      data.pageMetadata.attributes[1].value.indexOf('.eth') > -1
-        ? data.pageMetadata.attributes[1].value
-        : data.pageMetadata.attributes[1].value.substring(0, 6);
+      data.pageMetadata.attributes[1].value.indexOf('0x') > -1 &&
+      data.pageMetadata.attributes[1].value.length === 42
+        ? data.pageMetadata.attributes[1].value.substring(0, 6)
+        : data.pageMetadata.attributes[1].value;
     const embed = new MessageBuilder()
       .setTitle(
         artGobbledTitles[Math.floor(Math.random() * artGobbledTitles.length)],
