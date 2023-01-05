@@ -13,6 +13,10 @@ export class AppService {
     '0xd616bc45da7261b2554001cb5a5aca3949bf5abe26c4b43b634bdc12104dfbeb',
     '0x32dd030bdd32642f0f5fad2d6d9bf96fca5642008d2326d6c21298e2eb04979c',
     '0x99c42b6e6e8c2e77ac010945465695f727ee782120938ef996338a723cfe3b3f',
+    '0x7260e4bbdd121a9bf44e220e65f32bab8b4bfff978f32ff518e64df091531f45',
+    '0xea89be6a26f92c51070111006ce0c50e7e855c2665446f2d1a693145a10460eb',
+    '0xe951c50b9fda6777e7fb5a916ef11d99d74d195369d77198342e45692b0ed7f9',
+    '0x5a55bbea49b243b92a43a36b155c5bfe9ef3d382589865565c2ccc55430b0488',
   ]);
   static glamAlreadySent = new Set([
     '393',
@@ -130,6 +134,9 @@ export class AppService {
     '3553',
     '3707',
     '862',
+    '169',
+    '843',
+    '4191',
   ]);
   static lastBlockProcessed = 0;
 
@@ -258,6 +265,11 @@ export class AppService {
       'Gobble very much',
     ];
 
+    const assignedGobblerId = (
+      await axios.get(
+        `https://artgobblers.com/api/dev/gobbler-tokenid-to-assignedid?tokenId=${data.gobblerId}`,
+      )
+    ).data.assignedGobbledId;
     const addressOrEns =
       data.pageMetadata.attributes[1].value.indexOf('0x') > -1 &&
       data.pageMetadata.attributes[1].value.length === 42
@@ -273,7 +285,9 @@ export class AppService {
           data.pageMetadata.name.split(' –')[0]
         }"*** by ${addressOrEns}...`,
       )
-      .setThumbnail(data.gobblerMetadata.image)
+      .setThumbnail(
+        `https://storage.googleapis.com/gobblers-with-art.artgobblers.com/gifs/${assignedGobblerId}_${data.pageId}.gif`,
+      )
       .setImage(data.pageMetadata.image)
       .setColor(data.pageMetadata.background_color);
     hook.send(embed);
